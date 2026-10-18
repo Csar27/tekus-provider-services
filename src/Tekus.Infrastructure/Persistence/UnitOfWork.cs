@@ -25,13 +25,6 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        // DIAG
-        foreach (var e in _db.ChangeTracker.Entries())
-        {
-            var pk = e.Metadata.FindPrimaryKey()?.Properties.FirstOrDefault();
-            Console.WriteLine($"DIAG {e.State} {e.Metadata.ClrType.Name} pk={pk?.Name}:{(pk is null ? "" : e.Property(pk.Name).CurrentValue)}");
-        }
-
         var affectedRows = await _db.SaveChangesAsync(cancellationToken);
 
         var pendingEvents = _db.ChangeTracker
