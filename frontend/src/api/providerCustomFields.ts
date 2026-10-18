@@ -1,17 +1,36 @@
 import { api } from '../lib/api';
 
-export function getProviderCustomFields(providerId: string) {
-  return api.get(`/providers/${providerId}/custom-fields`).then((r) => r.data);
+/**
+ * Provider custom fields are stored as key/value pairs and addressed by their
+ * key (the API has no field id and no collection endpoint for them):
+ *
+ *   - read   GET  /providers/{id}            -> detail.customFields
+ *   - upsert PUT  /providers/{id}/custom-fields/{key}  body { value }
+ *   - remove DELETE /providers/{id}/custom-fields/{key}
+ */
+
+export interface ProviderCustomField {
+  key: string;
+  value: string;
 }
 
-export function addProviderCustomField(providerId: string, data: any) {
-  return api.post(`/providers/${providerId}/custom-fields`, data).then((r) => r.data);
+/** Reads the custom fields from the provider detail (there is no list endpoint). */
+export async function getProviderCustomFields(providerId: string): Promise<ProviderCustomField[]> {
+  const { data } = await api.get(`/providers/${providerId}`);
+  const fields = data.customFields ?? [];
+  return fields.map((f: any) => ({ key: f.key, value: f.value }));
 }
 
-export function updateProviderCustomField(providerId: string, fieldId: string, data: any) {
-  return api.put(`/providers/${providerId}/custom-fields/${fieldId}`, data).then((r) => r.data);
+/** Creates or overwrites a field, matched by key. */
+export function upsertProviderCustomField(providerId: string, key: string, value: string) {
+  return api
+    .put(`/providers/${providerId}/custom-fields/${encodeURIComponent(key)}`, { value })
+    .then((r) => r.data);
 }
 
-export function deleteProviderCustomField(providerId: string, fieldId: string) {
-  return api.delete(`/providers/${providerId}/custom-fields/${fieldId}`).then((r) => r.data);
+/** Removes a single field by key. */
+export function deleteProviderCustomField(providerId: string, key: string) {
+  return api
+    .delete(`/providers/${providerId}/custom-fields/${encodeURIComponent(key)}`)
+    .then((r) => r.data);
 }

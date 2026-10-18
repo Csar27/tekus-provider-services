@@ -143,6 +143,8 @@ internal sealed class ServiceReadRepository : IServiceReadRepository
             .OrderBy(country => country.Name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
+        // EF Core cannot translate an OrderBy applied over a projection that invokes a
+        // record constructor, so the sort happens on the joined row and the DTO is built last.
         var providers = await _db.ProviderServices
             .AsNoTracking()
             .Where(offering => offering.ServiceId == id)
@@ -150,8 +152,9 @@ internal sealed class ServiceReadRepository : IServiceReadRepository
                 _db.Providers.AsNoTracking(),
                 offering => offering.ProviderId,
                 provider => provider.Id,
-                (_, provider) => new ProviderReferenceDto(provider.Id, provider.Name, provider.Nit))
-            .OrderBy(reference => reference.Name)
+                (_, provider) => new { provider.Id, provider.Name, provider.Nit })
+            .OrderBy(row => row.Name)
+            .Select(row => new ProviderReferenceDto(row.Id, row.Name, row.Nit))
             .ToListAsync(cancellationToken);
 
         return new ServiceDetailDto(

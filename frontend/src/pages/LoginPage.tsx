@@ -2,42 +2,150 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useAuth } from '../auth/authContext';
+import { Button } from '../components/ui';
 
 export function LoginPage() {
   const [email, setEmail] = useState('admin@tekus.co');
   const [password, setPassword] = useState('Tekus.2026!');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setBusy(true);
     try {
       const res = await api.post('/auth/login', { email, password });
       login(res.data.accessToken);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed');
+      setError(err.response?.data?.detail || 'We could not sign you in. Check your credentials.');
+    } finally {
+      setBusy(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-800 to-slate-950">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl p-8 w-full max-w-md shadow-xl">
-        <h2 className="text-2xl font-bold text-center mb-2 text-slate-200">Tekus Provider Services</h2>
-        <p className="text-center text-sm text-slate-400 mb-6">Sign in to access the portal</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Email</label>
-            <input className="w-full bg-slate-900 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Brand panel */}
+      <div
+        style={{
+          flex: '1 1 46%',
+          background: 'var(--color-navy-deep)',
+          color: '#e8edf4',
+          padding: '3rem',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+          <div className="sidebar__mark" aria-hidden="true">
+            T
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Password</label>
-            <input className="w-full bg-slate-900 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+            <div className="sidebar__name">Tekus</div>
+            <div className="sidebar__tag">Provider Services</div>
           </div>
-          {error && <div className="text-sm text-red-500">{error}</div>}
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition-colors">Sign in</button>
+        </div>
+
+        <div style={{ maxWidth: '34ch' }}>
+          <div className="pagehead__rule" aria-hidden="true" style={{ marginBottom: '1.4rem' }} />
+          <h1
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '2.6rem',
+              fontWeight: 600,
+              lineHeight: 1.1,
+              letterSpacing: '-0.015em',
+              color: '#fff',
+              margin: 0,
+            }}
+          >
+            The provider catalogue, in one register.
+          </h1>
+          <p style={{ marginTop: '1rem', fontSize: '15px', color: 'rgba(232,237,244,.62)', lineHeight: 1.6 }}>
+            Administrate suppliers, their service portfolio and the countries each service is
+            offered in.
+          </p>
+        </div>
+
+        <p style={{ fontSize: '12.5px', color: 'rgba(232,237,244,.4)', margin: 0 }}>
+          Internal use only · Access is logged
+        </p>
+      </div>
+
+      {/* Form panel */}
+      <div
+        style={{
+          flex: '1 1 54%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem',
+        }}
+      >
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: '100%', maxWidth: '360px' }}
+          aria-label="Sign in"
+        >
+          <div className="pagehead__rule" aria-hidden="true" />
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '28px',
+              fontWeight: 600,
+              margin: '0.6rem 0 0.25rem',
+            }}
+          >
+            Sign in
+          </h2>
+          <p style={{ color: 'var(--color-ink-soft)', fontSize: '14px', margin: '0 0 1.75rem' }}>
+            Use your Tekus account to continue.
+          </p>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label className="field__label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className="input"
+              type="email"
+              autoComplete="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div style={{ marginBottom: '1.1rem' }}>
+            <label className="field__label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              className="input"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="form-error" role="alert" style={{ marginBottom: '1rem' }}>
+              {error}
+            </div>
+          )}
+
+          <Button type="submit" disabled={busy} style={{ width: '100%', padding: '0.65rem' }}>
+            {busy ? 'Signing in…' : 'Sign in'}
+          </Button>
         </form>
       </div>
     </div>

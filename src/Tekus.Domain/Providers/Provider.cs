@@ -209,16 +209,46 @@ public sealed partial class Provider : AggregateRoot
     {
         ArgumentNullException.ThrowIfNull(serviceIds);
 
-        var target = serviceIds.Distinct().ToArray();
+        var targetIds = serviceIds
+            .Where(id => id != Guid.Empty)
+            .Distinct()
+            .ToHashSet();
 
-        foreach (var serviceId in target)
+        var currentIds = _offeredServices
+            .Select(offering => offering.ServiceId)
+            .ToHashSet();
+
+        var hasChanges = false;
+
+        // Remove offerings that are no longer in the target set.
+        foreach (var serviceId in currentIds.Except(targetIds).ToArray())
         {
-            AssignService(serviceId, utcNow);
+            var existing = _offeredServices.FirstOrDefault(offering => offering.ServiceId == serviceId);
+
+            if (existing is not null)
+            {
+                _offeredServices.Remove(existing);
+                hasChanges = true;
+            }
         }
 
-        foreach (var serviceId in _offeredServices.Select(offering => offering.ServiceId).Except(target).ToArray())
+        // Add offerings that are missing from the current set.
+        foreach (var serviceId in targetIds.Except(currentIds).ToArray())
         {
-            RemoveService(serviceId, utcNow);
+            if (_offeredServices.Count >= MaxServicesPerProvider)
+            {
+                throw new DomainException(
+                    $"A provider cannot offer more than {MaxServicesPerProvider} services.",
+                    ErrorCodes.Validation);
+            }
+
+            _offeredServices.Add(ProviderService.Assign(Id, serviceId, utcNow));
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            Touch(utcNow);
         }
     }
 
