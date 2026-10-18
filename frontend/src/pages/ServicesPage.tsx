@@ -10,12 +10,13 @@ import {
   getServiceCountries,
   setServiceCountries,
 } from '../api/services';
-import { getCountries } from '../api/countries';
+import { getAllCountries } from '../api/countries';
 import { TableControls } from '../components/TableControls';
 import { Pagination } from '../components/Pagination';
 import { Modal } from '../components/Modal';
 import { Button, EmptyState, PageHead, Panel, StatusPill, TableSkeleton } from '../components/ui';
 import { formatDate, formatMoney } from '../lib/format';
+import { readApiError } from '../lib/api';
 
 export function ServicesPage() {
   const [page, setPage] = useState(1);
@@ -74,11 +75,13 @@ export function ServicesPage() {
 
   const startEdit = (s: any) => {
     setEditing(s);
+    setSaveError(null);
     reset({ name: s.name, description: s.description ?? '', hourlyRateUsd: s.hourlyRateUsd });
     setOpen(true);
   };
   const startCreate = () => {
     setEditing(null);
+    setSaveError(null);
     reset({ name: '', description: '', hourlyRateUsd: 0 });
     setOpen(true);
   };
@@ -244,6 +247,7 @@ export function ServicesPage() {
         }
       >
         <form onSubmit={handleSubmit(submit)}>
+          {saveError && <p className="form-error">{saveError}</p>}
           <div style={{ marginBottom: '1rem' }}>
             <label className="field__label" htmlFor="svc-name">
               Name
@@ -311,9 +315,9 @@ function ServiceCountriesModal({
     queryFn: () => getServiceCountries(service.id),
     enabled: open,
   });
-  const { data: all } = useQuery({
+  const { data: options = [] } = useQuery({
     queryKey: ['countries-all'],
-    queryFn: () => getCountries({ pageSize: 500, sortBy: 'name', sortDirection: 'asc' }),
+    queryFn: () => getAllCountries({ sortBy: 'name', sortDirection: 'asc' }),
     enabled: open,
   });
 
@@ -336,7 +340,6 @@ function ServiceCountriesModal({
   const toggle = (code: string) =>
     setSelected((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
 
-  const options = all?.items ?? [];
   const dirty =
     !!assigned &&
     (assigned.length !== selected.length ||

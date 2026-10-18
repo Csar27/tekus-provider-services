@@ -44,8 +44,18 @@ export function deactivateService(id: string) {
   return api.patch(`/services/${id}/status`, { isActive: false }).then((r) => r.data);
 }
 
+/**
+ * The API exposes a `PUT` for service countries but no `GET` collection, so the
+ * assigned list is read from the service detail (same pattern as the provider
+ * portfolio). The detail reports `code`; the modal keys on `countryCode`.
+ */
 export function getServiceCountries(id: string) {
-  return api.get(`/services/${id}/countries`).then((r) => r.data);
+  return api.get(`/services/${id}`).then((r) =>
+    ((r.data?.countries ?? []) as any[]).map((c) => ({
+      countryCode: c.code,
+      name: c.name,
+    })),
+  );
 }
 
 export function setServiceCountries(id: string, countryCodes: string[]) {
