@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Tekus.Domain</RootNamespace>
+    <AssemblyName>Tekus.Domain</AssemblyName>
+    <!-- The domain has no dependencies on any framework package: only the BCL. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>
