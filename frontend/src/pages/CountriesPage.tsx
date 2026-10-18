@@ -21,7 +21,9 @@ export function CountriesPage() {
 
   return (
     <div>
-      <h2>Countries</h2>
+      <div className="page-header">
+        <h2 className="page-title">Countries</h2>
+      </div>
       <TableControls
         search={search}
         sortBy={sortBy}
@@ -31,11 +33,14 @@ export function CountriesPage() {
         onSortDirectionChange={setSortDirection}
         sortOptions={[{ value: 'code', label: 'Code' }, { value: 'name', label: 'Name' }, { value: 'region', label: 'Region' }]}
       />
-      <ul>
-        {data.items?.map((c: any) => (
-          <li key={c.code}>{c.code} - {c.name} ({c.region})</li>
-        ))}
-      </ul>
+      <table className="table">
+        <thead><tr><th>Code</th><th>Name</th><th>Region</th></tr></thead>
+        <tbody>
+          {data.items?.map((c: any) => (
+            <tr key={c.code}><td>{c.code}</td><td>{c.name}</td><td>{c.region}</td></tr>
+          ))}
+        </tbody>
+      </table>
       <Pagination page={page} pageSize={pageSize} totalCount={data.totalCount} totalPages={data.totalPages} onPageChange={setPage} onPageSizeChange={setPageSize} />
     </div>
   );

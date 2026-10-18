@@ -9,26 +9,31 @@ export function DashboardPage() {
 
   return (
     <div>
-      <h2>Dashboard</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-        <div style={{ border: '1px solid #ddd', padding: 16, borderRadius: 8 }}>
-          <h4>Providers</h4>
-          <div>Total: {data.totals?.providers}</div>
-          <div>Active: {data.totals?.activeProviders}</div>
+      <div className="page-header">
+        <h2 className="page-title">Dashboard</h2>
+      </div>
+      <div className="dashboard-grid">
+        <div className="kpi-card">
+          <div className="kpi-title">Providers</div>
+          <div className="kpi-value">{data.totals?.providers}</div>
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Active: {data.totals?.activeProviders}</div>
         </div>
-        <div style={{ border: '1px solid #ddd', padding: 16, borderRadius: 8 }}>
-          <h4>Services</h4>
-          <div>Total: {data.totals?.services}</div>
-          <div>Active: {data.totals?.activeServices}</div>
+        <div className="kpi-card">
+          <div className="kpi-title">Services</div>
+          <div className="kpi-value">{data.totals?.services}</div>
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Active: {data.totals?.activeServices}</div>
         </div>
-        <div style={{ border: '1px solid #ddd', padding: 16, borderRadius: 8 }}>
-          <h4>Countries/Offerings</h4>
-          <div>Countries: {data.totals?.countries}</div>
-          <div>Offerings: {data.totals?.offerings}</div>
+        <div className="kpi-card">
+          <div className="kpi-title">Countries</div>
+          <div className="kpi-value">{data.totals?.countries}</div>
+        </div>
+        <div className="kpi-card">
+          <div className="kpi-title">Offerings</div>
+          <div className="kpi-value">{data.totals?.offerings}</div>
         </div>
       </div>
 
-      <h3 style={{ marginTop: 24 }}>Top Providers by Services</h3>
+      <h3 className="section-title">Top Providers by Services</h3>
       <ul>
         {data.topProvidersByServices?.map((p: any) => (
           <li key={p.providerId}>{p.name} ({p.nit}) - {p.serviceCount} services (${p.totalHourlyRateUsd})</li>

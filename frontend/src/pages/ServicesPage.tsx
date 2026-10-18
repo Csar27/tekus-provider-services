@@ -40,19 +40,19 @@ export function ServicesPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Services</h2>
+      <div className="page-header">
+        <h2 className="page-title">Services</h2>
         <button onClick={startCreate}>New Service</button>
       </div>
       <TableControls search={search} sortBy={sortBy} sortDirection={sortDirection} onSearchChange={setSearch} onSortByChange={setSortBy} onSortDirectionChange={setSortDirection} sortOptions={[{ value: 'name', label: 'Name' }, { value: 'hourlyRateUsd', label: 'Rate' }, { value: 'createdAtUtc', label: 'Created' }]} />
-      <table style={{ width: '100%' }}>
-        <thead><tr><th>Name</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead>
+      <table className="table">
+        <thead><tr><th>Name</th><th>Rate (USD/hr)</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           {data.items?.map((s: any) => (
-            <tr key={s.id}><td>{s.name}</td><td>{s.hourlyRateUsd}</td><td>{s.isActive ? 'Active' : 'Inactive'}</td><td style={{ display: 'flex', gap: 4 }}>
-              <button onClick={() => startEdit(s)}>Edit</button>
-              {s.isActive ? <button onClick={() => deactivateMut.mutate(s.id)}>Deactivate</button> : <button onClick={() => activateMut.mutate(s.id)}>Activate</button>}
-              <button onClick={() => { setSelectedService(s); setOpenCountries(true); }}>Countries</button>
+            <tr key={s.id}><td>{s.name}</td><td>${s.hourlyRateUsd}</td><td>{s.isActive ? 'Active' : 'Inactive'}</td><td className="actions">
+              <button className="secondary" onClick={() => startEdit(s)}>Edit</button>
+              {s.isActive ? <button className="secondary" onClick={() => deactivateMut.mutate(s.id)}>Deactivate</button> : <button onClick={() => activateMut.mutate(s.id)}>Activate</button>}
+              <button className="secondary" onClick={() => { setSelectedService(s); setOpenCountries(true); }}>Countries</button>
             </td></tr>
           ))}
         </tbody>

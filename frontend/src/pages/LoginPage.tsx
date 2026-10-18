@@ -23,18 +23,23 @@ export function LoginPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '4rem auto' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" style={{ width: '100%', padding: 8 }} />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" style={{ width: '100%', padding: 8 }} />
-        </div>
-        {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
-        <button type="submit" style={{ width: '100%', padding: 8 }}>Login</button>
-      </form>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Tekus Provider Services</h2>
+        <p className="login-subtitle">Sign in to access the portal</p>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input className="form-input" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input className="form-input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+          </div>
+          {error && <div className="error-text">{error}</div>}
+          <button type="submit" className="btn-full">Sign in</button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -43,20 +43,20 @@ export function ProvidersPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Providers</h2>
+      <div className="page-header">
+        <h2 className="page-title">Providers</h2>
         <button onClick={startCreate}>New Provider</button>
       </div>
       <TableControls search={search} sortBy={sortBy} sortDirection={sortDirection} onSearchChange={setSearch} onSortByChange={setSortBy} onSortDirectionChange={setSortDirection} sortOptions={[{ value: 'name', label: 'Name' }, { value: 'nit', label: 'NIT' }, { value: 'createdAtUtc', label: 'Created' }]} />
-      <table style={{ width: '100%' }}>
-        <thead><tr><th>NIT</th><th>Name</th><th>Email</th><th>Services</th><th>CF</th><th>Status</th><th>Actions</th></tr></thead>
+      <table className="table">
+        <thead><tr><th>NIT</th><th>Name</th><th>Email</th><th>Services</th><th>Custom Fields</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           {data.items?.map((p: any) => (
-            <tr key={p.id}><td>{p.nit}</td><td>{p.name}</td><td>{p.email}</td><td>{p.serviceCount}</td><td>{p.customFieldCount}</td><td>{p.isActive ? 'Active' : 'Inactive'}</td><td style={{ display: 'flex', gap: 4 }}>
-              <button onClick={() => startEdit(p)}>Edit</button>
-              {p.isActive ? <button onClick={() => deactivateMut.mutate(p.id)}>Deactivate</button> : <button onClick={() => activateMut.mutate(p.id)}>Activate</button>}
-              <button onClick={() => { setSelectedProvider(p); setOpenServices(true); }}>Services</button>
-              <button onClick={() => { setSelectedProvider(p); setOpenFields(true); }}>Custom Fields</button>
+            <tr key={p.id}><td>{p.nit}</td><td>{p.name}</td><td>{p.email}</td><td>{p.serviceCount}</td><td>{p.customFieldCount}</td><td>{p.isActive ? 'Active' : 'Inactive'}</td><td className="actions">
+              <button className="secondary" onClick={() => startEdit(p)}>Edit</button>
+              {p.isActive ? <button className="secondary" onClick={() => deactivateMut.mutate(p.id)}>Deactivate</button> : <button onClick={() => activateMut.mutate(p.id)}>Activate</button>}
+              <button className="secondary" onClick={() => { setSelectedProvider(p); setOpenServices(true); }}>Services</button>
+              <button className="secondary" onClick={() => { setSelectedProvider(p); setOpenFields(true); }}>Custom Fields</button>
             </td></tr>
           ))}
         </tbody>

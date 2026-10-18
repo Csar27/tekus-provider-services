@@ -9,7 +9,7 @@ interface Props {
 
 export function Pagination({ page, pageSize, totalCount, totalPages, onPageChange, onPageSizeChange }: Props) {
   return (
-    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 16 }}>
+    <div className="pagination">
       <button disabled={page <= 1} onClick={() => onPageChange(page - 1)}>Prev</button>
       <span>Page {page} / {totalPages || 1}</span>
       <button disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>Next</button>

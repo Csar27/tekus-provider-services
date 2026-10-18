@@ -17,19 +17,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function Layout() {
   return (
-    <div style={{ padding: '1rem 2rem' }}>
-      <nav style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
-        <Link to="/">Dashboard</Link>
-        <Link to="/providers">Providers</Link>
-        <Link to="/services">Services</Link>
-        <Link to="/countries">Countries</Link>
+    <div className="layout">
+      <nav className="navbar">
+        <div className="navbar-brand">Tekus</div>
+        <div className="navbar-links">
+          <Link className="navbar-link" to="/">Dashboard</Link>
+          <Link className="navbar-link" to="/providers">Providers</Link>
+          <Link className="navbar-link" to="/services">Services</Link>
+          <Link className="navbar-link" to="/countries">Countries</Link>
+        </div>
       </nav>
-      <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/providers" element={<ProvidersPage />} />
-        <Route path="/services" element={<ServicesPage />} />
-        <Route path="/countries" element={<CountriesPage />} />
-      </Routes>
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/providers" element={<ProvidersPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/countries" element={<CountriesPage />} />
+        </Routes>
+      </div>
     </div>
   );
 }
