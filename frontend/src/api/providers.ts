@@ -22,9 +22,9 @@ export function updateProvider(id: string, data: any) {
 }
 
 export function activateProvider(id: string) {
-  return api.post(`/providers/${id}/activate`).then((r) => r.data);
+  return api.patch(`/providers/${id}/status`, { isActive: true }).then((r) => r.data);
 }
 
 export function deactivateProvider(id: string) {
-  return api.post(`/providers/${id}/deactivate`).then((r) => r.data);
+  return api.patch(`/providers/${id}/status`, { isActive: false }).then((r) => r.data);
 }

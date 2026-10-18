@@ -22,11 +22,11 @@ export function updateService(id: string, data: any) {
 }
 
 export function activateService(id: string) {
-  return api.post(`/services/${id}/activate`).then((r) => r.data);
+  return api.patch(`/services/${id}/status`, { isActive: true }).then((r) => r.data);
 }
 
 export function deactivateService(id: string) {
-  return api.post(`/services/${id}/deactivate`).then((r) => r.data);
+  return api.patch(`/services/${id}/status`, { isActive: false }).then((r) => r.data);
 }
 
 export function getServiceCountries(id: string) {
