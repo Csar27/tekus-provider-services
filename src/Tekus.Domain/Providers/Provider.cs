@@ -228,7 +228,8 @@ public sealed partial class Provider : AggregateRoot
         Version++;
     }
 
-    internal static string NormalizeNit(string? nit)
+    /// <summary>Normalises and validates a NIT (strips dots/spaces, keeps the optional check digit).</summary>
+    public static string NormalizeNit(string? nit)
     {
         var normalized = Guard
             .NotNullOrWhiteSpace(nit, "nit", NitMaxLength)
@@ -242,12 +243,15 @@ public sealed partial class Provider : AggregateRoot
                 ErrorCodes.Validation);
     }
 
-    internal static string NormalizeName(string? name)
+    /// <summary>Normalises and validates the provider name.</summary>
+    public static string NormalizeName(string? name)
         => Guard.NotNullOrWhiteSpace(name, "name", NameMaxLength, minLength: 3);
 
-    internal static string NormalizeEmail(string? email) => EmailAddress.Create(email).Value;
+    /// <summary>Normalises and validates the contact e-mail of the provider.</summary>
+    public static string NormalizeEmail(string? email) => EmailAddress.Create(email).Value;
 
-    internal static string NormalizeCustomFieldKey(string? key)
+    /// <summary>Normalises and validates the name of a user defined field.</summary>
+    public static string NormalizeCustomFieldKey(string? key)
     {
         var normalized = Guard.NotNullOrWhiteSpace(key, "key", ProviderCustomField.KeyMaxLength, minLength: 2)
             .SquashInnerSpaces();

@@ -6,7 +6,7 @@ namespace Tekus.Domain.Users;
 /// User aggregate root. It owns the credentials, the lockout counters and the refresh tokens
 /// already issued (so revoking "all sessions" is a single aggregate operation).
 /// </summary>
-public sealed class User : AggregateRoot
+public sealed partial class User : AggregateRoot
 {
     public const int EmailMaxLength = 200;
     public const int FullNameMaxLength = 150;

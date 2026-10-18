@@ -172,7 +172,8 @@ public sealed partial class Service : AggregateRoot
         Version++;
     }
 
-    internal static string NormalizeName(string? name)
+    /// <summary>Normalises and validates the service name.</summary>
+    public static string NormalizeName(string? name)
     {
         var normalized = Guard.NotNullOrWhiteSpace(name, "name", NameMaxLength, minLength: 3).SquashInnerSpaces();
 
@@ -183,13 +184,15 @@ public sealed partial class Service : AggregateRoot
                 ErrorCodes.Validation);
     }
 
-    internal static decimal NormalizeHourlyRate(decimal hourlyRateUsd)
+    /// <summary>Validates the hourly rate and rounds it to two decimals (USD).</summary>
+    public static decimal NormalizeHourlyRate(decimal hourlyRateUsd)
         => decimal.Round(
             Guard.Positive(hourlyRateUsd, "hourlyRateUsd", MaxHourlyRateUsd),
             RateDecimals,
             MidpointRounding.AwayFromZero);
 
-    internal static string? NormalizeDescription(string? description)
+    /// <summary>Normalises the optional description (empty strings become <c>null</c>).</summary>
+    public static string? NormalizeDescription(string? description)
         => string.IsNullOrWhiteSpace(description)
             ? null
             : Guard.NotNullOrWhiteSpace(description, "description", DescriptionMaxLength, minLength: 3).SquashInnerSpaces();
