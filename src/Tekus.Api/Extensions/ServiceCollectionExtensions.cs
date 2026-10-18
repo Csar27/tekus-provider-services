@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Tekus.Api.Middleware;
+using Tekus.Api.Security;
+using Tekus.Application.Abstractions.Security;
 using Tekus.Infrastructure.Persistence;
 
 namespace Tekus.Api.Extensions;
@@ -27,6 +29,9 @@ internal static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
+
+        // Bridge between the HTTP request (JWT claims) and the application layer.
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         services.AddApiOpenApi();
         services.AddApiCors(environment);
