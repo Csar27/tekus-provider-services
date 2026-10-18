@@ -10,6 +10,7 @@ internal sealed class ProviderCustomFieldConfiguration : IEntityTypeConfiguratio
     {
         builder.ToTable("ProviderCustomFields");
         builder.HasKey(field => field.Id);
+        builder.Property(field => field.Id).ValueGeneratedNever();
 
         builder.Property(field => field.Key).HasMaxLength(ProviderCustomField.KeyMaxLength).IsRequired();
         builder.Property(field => field.Value).HasMaxLength(ProviderCustomField.ValueMaxLength).IsRequired();
@@ -20,3 +21,5 @@ internal sealed class ProviderCustomFieldConfiguration : IEntityTypeConfiguratio
         builder.HasIndex(field => new { field.ProviderId, field.Key }).IsUnique();
     }
 }
+
+

@@ -10,6 +10,7 @@ internal sealed class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
     {
         builder.ToTable("AuditLogs");
         builder.HasKey(entry => entry.Id);
+        builder.Property(entry => entry.Id).ValueGeneratedNever();
 
         builder.Property(entry => entry.OccurredAtUtc).IsRequired();
         builder.Property(entry => entry.EventType).HasMaxLength(128).IsRequired();
@@ -21,3 +22,5 @@ internal sealed class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
         builder.HasIndex(entry => new { entry.AggregateType, entry.AggregateId });
     }
 }
+
+

@@ -49,7 +49,11 @@ public static class DependencyInjection
                 $"Connection string '{connectionStringName}' is missing from the configuration.");
 
         services.AddDbContext<TekusDbContext>(options =>
-            options.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure()));
+            options.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure())
+#if DEBUG
+                .EnableSensitiveDataLogging()
+#endif
+                );
 
         // A single, injectable clock for the whole system: every timestamp is UTC and tests can
         // freeze it. See docs/architecture.md ("Time").
@@ -107,6 +111,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
         var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
                          ?? new JwtOptions();
@@ -136,5 +141,28 @@ public static class DependencyInjection
                     ClockSkew = TimeSpan.FromMinutes(1),
                 };
             });
+    }
+
+    /// <summary>
+    /// Applies the pending EF Core migrations and (optionally) runs the development seed.
+    /// Called once at startup by the API host. It is exposed as an extension on
+    /// <see cref="IServiceProvider"/> so the internal bootstrapper stays an implementation detail.
+    /// </summary>
+    /// <param name="seedDevelopmentData">
+    /// When <c>true</c> the deterministic demo data (users, countries, services and providers) is
+    /// inserted if the tables are empty. Enable it only in the Development environment.
+    /// </param>
+    public static async Task InitializeDatabaseAsync(
+        this IServiceProvider serviceProvider,
+        bool seedDevelopmentData,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+
+        using var scope = serviceProvider.CreateScope();
+
+        var bootstrapper = scope.ServiceProvider.GetRequiredService<DatabaseBootstrapper>();
+
+        await bootstrapper.InitializeAsync(seedDevelopmentData, cancellationToken);
     }
 }

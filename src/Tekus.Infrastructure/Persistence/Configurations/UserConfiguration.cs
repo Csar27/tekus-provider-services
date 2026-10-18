@@ -10,6 +10,7 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("Users");
         builder.HasKey(user => user.Id);
+        builder.Property(user => user.Id).ValueGeneratedNever();
 
         builder.Property(user => user.Email).HasMaxLength(User.EmailMaxLength).IsRequired();
         builder.Property(user => user.FullName).HasMaxLength(User.FullNameMaxLength).IsRequired();
@@ -32,3 +33,5 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Navigation(user => user.RefreshTokens).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
+
+

@@ -11,6 +11,7 @@ internal sealed class ServiceCountryConfiguration : IEntityTypeConfiguration<Ser
     {
         builder.ToTable("ServiceCountries");
         builder.HasKey(country => country.Id);
+        builder.Property(country => country.Id).ValueGeneratedNever();
 
         builder.Property(country => country.CountryCode)
             .HasMaxLength(CountryCode.Length)
@@ -29,3 +30,5 @@ internal sealed class ServiceCountryConfiguration : IEntityTypeConfiguration<Ser
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+

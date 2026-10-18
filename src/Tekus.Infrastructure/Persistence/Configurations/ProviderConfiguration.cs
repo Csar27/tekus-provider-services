@@ -10,6 +10,7 @@ internal sealed class ProviderConfiguration : IEntityTypeConfiguration<Provider>
     {
         builder.ToTable("Providers");
         builder.HasKey(provider => provider.Id);
+        builder.Property(provider => provider.Id).ValueGeneratedNever();
 
         builder.Property(provider => provider.Nit).HasMaxLength(Provider.NitMaxLength).IsRequired();
         builder.Property(provider => provider.Name).HasMaxLength(Provider.NameMaxLength).IsRequired();
@@ -41,3 +42,5 @@ internal sealed class ProviderConfiguration : IEntityTypeConfiguration<Provider>
         builder.Navigation(provider => provider.OfferedServices).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
+
+

@@ -10,6 +10,7 @@ internal sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refre
     {
         builder.ToTable("RefreshTokens");
         builder.HasKey(token => token.Id);
+        builder.Property(token => token.Id).ValueGeneratedNever();
 
         // Only the SHA-256 hash of the token is stored, and it is unique.
         builder.Property(token => token.TokenHash).HasMaxLength(128).IsRequired();

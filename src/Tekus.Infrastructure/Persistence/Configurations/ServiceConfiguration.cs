@@ -10,6 +10,7 @@ internal sealed class ServiceConfiguration : IEntityTypeConfiguration<Service>
     {
         builder.ToTable("Services");
         builder.HasKey(service => service.Id);
+        builder.Property(service => service.Id).ValueGeneratedNever();
 
         builder.Property(service => service.Name).HasMaxLength(Service.NameMaxLength).IsRequired();
         builder.Property(service => service.HourlyRateUsd).HasPrecision(18, Service.RateDecimals).IsRequired();
@@ -32,3 +33,5 @@ internal sealed class ServiceConfiguration : IEntityTypeConfiguration<Service>
         builder.Navigation(service => service.Countries).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
+
+
