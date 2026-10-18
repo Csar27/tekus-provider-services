@@ -18,7 +18,7 @@ import { getServices } from '../api/services';
 import { TableControls } from '../components/TableControls';
 import { Pagination } from '../components/Pagination';
 import { Modal } from '../components/Modal';
-import { Button, EmptyState, PageHead, Panel, StatusPill, TableSkeleton } from '../components/ui';
+import { Button, EmptyState, PageHead, Panel, QueryError, StatusPill, TableSkeleton } from '../components/ui';
 import { formatDate, formatMoney } from '../lib/format';
 import { readApiError } from '../lib/api';
 
@@ -37,7 +37,7 @@ export function ProvidersPage() {
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['providers', page, pageSize, search, sortBy, sortDirection],
     queryFn: () => getProviders({ page, pageSize, search, sortBy, sortDirection }),
   });
@@ -147,7 +147,14 @@ export function ProvidersPage() {
       <Panel meta={data ? `${data.totalCount} providers` : undefined}>
         {isLoading && <TableSkeleton rows={7} cols={7} />}
 
-        {!isLoading && (!data?.items || data.items.length === 0) && (
+        {isError && (
+          <QueryError
+            message={readApiError(error, 'The provider list could not be loaded.')}
+            onRetry={refetch}
+          />
+        )}
+
+        {!isLoading && !isError && (!data?.items || data.items.length === 0) && (
           <EmptyState
             title={search ? 'No provider matches your search' : 'No providers registered'}
             hint={

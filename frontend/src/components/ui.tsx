@@ -84,6 +84,27 @@ export function EmptyState({ title, hint }: { title: string; hint?: string }) {
   );
 }
 
+/**
+ * Shown when a query fails (API down, session expired, network). Rendering this
+ * instead of the empty state is what keeps an outage from looking like an empty
+ * database.
+ */
+export function QueryError({ message, onRetry }: { message: string; onRetry?: () => void }) {
+  return (
+    <div className="empty">
+      <div className="empty__title">We could not load this data</div>
+      <div className="empty__hint">{message}</div>
+      {onRetry && (
+        <div style={{ marginTop: '1rem' }}>
+          <Button variant="outline" onClick={onRetry}>
+            Try again
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------------- loading */
 
 export function TableSkeleton({ rows = 6, cols = 4 }: { rows?: number; cols?: number }) {

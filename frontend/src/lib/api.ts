@@ -13,6 +13,31 @@ api.interceptors.request.use((config) => {
 });
 
 /**
+ * The access token lives 60 minutes. Without this interceptor an expired session
+ * would leave every screen silently empty (all requests 401, nothing tells the
+ * user why), so a 401 anywhere except the sign-in call clears the token and
+ * sends the user back to the login page.
+ */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      const url = error.config?.url ?? '';
+      const isSignIn = url.includes('/auth/login');
+
+      if (!isSignIn) {
+        localStorage.removeItem('accessToken');
+        if (!window.location.pathname.startsWith('/login')) {
+          window.location.assign('/login');
+        }
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+/**
  * Turns an API failure into a sentence the user can act on, preferring the
  * server's `detail`, then field-level validation messages, then `title`.
  * Anything unrecognised falls back to the supplied message so a rejection is

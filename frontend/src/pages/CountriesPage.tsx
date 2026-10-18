@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getCountries } from '../api/countries';
 import { TableControls } from '../components/TableControls';
 import { Pagination } from '../components/Pagination';
-import { EmptyState, PageHead, Panel, TableSkeleton } from '../components/ui';
+import { EmptyState, PageHead, Panel, QueryError, TableSkeleton } from '../components/ui';
+import { readApiError } from '../lib/api';
 
 export function CountriesPage() {
   const [page, setPage] = useState(1);
@@ -12,7 +13,7 @@ export function CountriesPage() {
   const [sortBy, setSortBy] = useState('code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['countries', page, pageSize, search, sortBy, sortDirection],
     queryFn: () => getCountries({ page, pageSize, search, sortBy, sortDirection }),
   });
@@ -53,7 +54,14 @@ export function CountriesPage() {
       <Panel meta={data ? `${data.totalCount} countries` : undefined}>
         {isLoading && <TableSkeleton rows={8} cols={3} />}
 
-        {!isLoading && (!data?.items || data.items.length === 0) && (
+        {isError && (
+          <QueryError
+            message={readApiError(error, 'The country catalogue could not be loaded.')}
+            onRetry={refetch}
+          />
+        )}
+
+        {!isLoading && !isError && (!data?.items || data.items.length === 0) && (
           <EmptyState
             title={search ? 'No country matches your search' : 'The country catalogue is empty'}
             hint={

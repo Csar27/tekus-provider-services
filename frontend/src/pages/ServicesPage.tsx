@@ -14,7 +14,7 @@ import { getAllCountries } from '../api/countries';
 import { TableControls } from '../components/TableControls';
 import { Pagination } from '../components/Pagination';
 import { Modal } from '../components/Modal';
-import { Button, EmptyState, PageHead, Panel, StatusPill, TableSkeleton } from '../components/ui';
+import { Button, EmptyState, PageHead, Panel, QueryError, StatusPill, TableSkeleton } from '../components/ui';
 import { formatDate, formatMoney } from '../lib/format';
 import { readApiError } from '../lib/api';
 
@@ -32,7 +32,7 @@ export function ServicesPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const qc = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['services', page, pageSize, search, sortBy, sortDirection],
     queryFn: () => getServices({ page, pageSize, search, sortBy, sortDirection }),
   });
@@ -138,7 +138,14 @@ export function ServicesPage() {
       <Panel meta={data ? `${data.totalCount} services` : undefined}>
         {isLoading && <TableSkeleton rows={7} cols={5} />}
 
-        {!isLoading && (!data?.items || data.items.length === 0) && (
+        {isError && (
+          <QueryError
+            message={readApiError(error, 'The service list could not be loaded.')}
+            onRetry={refetch}
+          />
+        )}
+
+        {!isLoading && !isError && (!data?.items || data.items.length === 0) && (
           <EmptyState
             title={search ? 'No service matches your search' : 'No services registered'}
             hint={
