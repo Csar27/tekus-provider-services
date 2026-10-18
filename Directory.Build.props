@@ -1,0 +1,34 @@
+<Project>
+
+  <!--
+    Shared build settings for every project in the solution.
+    Keeping them here avoids duplicating ~15 lines of MSBuild in each .csproj
+    and guarantees the whole solution is compiled with the same language rules.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Quality gates -->
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8618;CS8625</WarningsAsErrors>
+
+    <!-- Reproducible builds / package metadata -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <Company>Tekus</Company>
+    <Product>Tekus Provider Services</Product>
+    <Authors>Candidate</Authors>
+    <Version>1.0.0</Version>
+    <NeutralLanguage>en-US</NeutralLanguage>
+
+    <!-- CS1591: missing XML comment (documentation is generated for the API surface) -->
+    <!-- CA1711: IDomainEventHandler keeps the DDD-standard name, it is not a delegate pattern -->
+    <NoWarn>$(NoWarn);CS1591;CA1711</NoWarn>
+  </PropertyGroup>
+
+</Project>

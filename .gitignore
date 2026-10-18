@@ -1,0 +1,85 @@
+## ---------------------------------------------------------------------------
+## .NET / Visual Studio / Rider ignore list
+## ---------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Oo]ut/
+artifacts/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+[Cc]overage[Rr]eport/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.rsuser
+*.svclog
+*.schemaview
+*.dbmdl
+*.psess
+*.vsp
+*.vspx
+*.VS.dbproj
+.vssscc
+.vspscc
+*.msp
+
+## Rider / VS Code / others
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.sln.iml
+*.DotSettings.user
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.sw?
+
+## EF Core / tools
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+.ef/
+.dotnet/      # local tool cache (the manifest in .config/ IS committed)
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+*.nupkg.metadata
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+## Secrets (never commit local overrides)
+appsettings.*.local.json
+*.env
+.env
