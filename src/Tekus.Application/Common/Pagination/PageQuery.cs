@@ -60,4 +60,17 @@ public abstract record PageQuery
             return AllowedSortKeys.Contains(candidate) ? candidate : DefaultSortKey;
         }
     }
+
+    /// <summary>
+    /// Paging values guaranteed to be usable, so a read repository can page without re-checking.
+    /// The same values are echoed back in the <c>PagedResult</c> so the client always knows which
+    /// page it actually received.
+    /// </summary>
+    public (int PageNumber, int PageSize) NormalizePaging()
+    {
+        var pageNumber = PageNumber < 1 ? 1 : PageNumber;
+        var pageSize = PageSize is < 1 or > MaxPageSize ? DefaultPageSize : PageSize;
+
+        return (pageNumber, pageSize);
+    }
 }
